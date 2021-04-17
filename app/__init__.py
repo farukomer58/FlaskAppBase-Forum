@@ -1,5 +1,8 @@
 from flask import Flask
 from config import Config 
+from flask_migrate import Migrate
+
+migrate = Migrate()
 
 # Create and Return a Flask app with its extensions and blueprints
 def create_app(config_filename=Config):
@@ -9,13 +12,13 @@ def create_app(config_filename=Config):
 
     # Method for Register/Init Extensions
     register_extensions(app)
+
+    import app.extensions as ex
+    migrate.init_app(app, ex.db)
     # Register Blueprints
     register_blueprints(app)
 
     return app
-
-
-
 
 # Method for Register/Init Extensions
 def register_extensions(app):

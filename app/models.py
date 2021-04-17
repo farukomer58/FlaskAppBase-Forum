@@ -19,6 +19,8 @@ class User(db.Model, UserMixin):
     
     # Define Relationship
     posts=  db.relationship('Post', backref='author', lazy=True)
+    # Define Relationship
+    comments=  db.relationship('Comment', backref='authorCom', lazy=True)
 
     # Generate and Return User Token 
     def get_reset_token(self, expires_sec=1800):
@@ -47,6 +49,24 @@ class Post(db.Model):
 
     # The the other side of the relationship
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    # Define Relationship
+    comments=  db.relationship('Comment', backref='thread', lazy=True)
   
     def __repr__(self):
         return f'Post({self.id}, {self.title}, {self.date_posted})'
+
+# Comment Model
+class Comment(db.Model):
+    # __tablename__ = '...' optional
+    id = db.Column(db.Integer, primary_key=True)
+    comment = db.Column(db.String(100), nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    # The the other side of the relationship
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    # The the other side of the relationship
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+
+    def __repr__(self):
+        return f'Comment({self.id}, {self.comment}, {self.date_posted})'

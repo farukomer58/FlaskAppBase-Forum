@@ -17,6 +17,53 @@
       <p class="article-content">{{ post.content }}</p>
     </div>
   </article>
+
+  <div class="bg-white p-3">
+      {% if current_user.is_authenticated %}
+      <form method="POST" action="">
+          {{ commentForm.hidden_tag() }}
+          <fieldset class="form-group">
+              <legend class="border-bottom mb-4">Place a Comment</legend>
+              <div class="form-group">
+                  {{ commentForm.content.label(class="form-control-label") }}
+                  {% if commentForm.content.errors %}
+                      {{ commentForm.content(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                          {% for error in commentForm.content.errors %}
+                              <span>{{ error }}</span>
+                          {% endfor %}
+                      </div>
+                  {% else %}  
+                      {{ commentForm.content(class="form-control form-control-lg") }}
+                  {% endif %}
+              </div>
+          </fieldset>
+          <div class="form-group">
+              {{ commentForm.submit(class="btn btn-outline-info") }}
+          </div>
+      </form>
+      <hr>
+      {% else %}
+      <p> Sign in to place Comments</p>
+      {% endif %}
+
+      <div class="media-body">
+        <h4>Comments</h4>
+          {% for comment in post.comments %}
+          <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + comment.authorCom.image_file) }}">
+            <div class="media-body">
+              <div class="article-metadata">
+                <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ comment.authorCom.username }}</a>
+                <small class="text-muted">{{ comment.date_posted.strftime('%Y-%m-%d') }}</small>
+              </div>
+              <p class="article-content">{{ comment.comment }}</p>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+  </div>
+  
   <!-- Modal -->
   <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
