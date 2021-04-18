@@ -7,10 +7,21 @@ main = Blueprint('main', __name__)
 @main.route("/")
 @main.route("/home")
 def home():
-    page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=2)
+    # page = request.args.get('page', 1, type=int)
+    latestPosts = Post.query.order_by(Post.date_posted.desc()).limit(6).all()
     categories = Category.query.limit(6).all()
-    return render_template('home.html', posts=posts,categories=categories)
+    
+    finalCat = []
+    for category in categories:
+        posts = Post.query.filter_by(category=category).all()
+        newCat = {
+            'id':category.id,
+            'category':category.category,
+            'threads':len(posts)
+        }
+        finalCat.append(newCat)
+    
+    return render_template('home.html', posts=posts,categories=finalCat,latestPosts=latestPosts)
 
 # About Me Page
 @main.route("/about")
