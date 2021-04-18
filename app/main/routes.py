@@ -8,8 +8,8 @@ main = Blueprint('main', __name__)
 @main.route("/home")
 def home():
     # page = request.args.get('page', 1, type=int)
-    latestPosts = Post.query.order_by(Post.date_posted.desc()).limit(6).all()
-    categories = Category.query.limit(6).all()
+    latestPosts = Post.query.order_by(Post.date_posted.desc()).limit(5).all()
+    categories = Category.query.all()
     
     finalCat = []
     for category in categories:

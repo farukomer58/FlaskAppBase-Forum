@@ -54,7 +54,7 @@
             <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + comment.authorCom.image_file) }}">
             <div class="media-body">
               <div class="article-metadata">
-                <a class="mr-2" href="{{ url_for('users.account_user', userid=post.author.id) }}">{{ post.author.username }}</a>
+                <a class="mr-2" href="{{ url_for('users.account_user', userid=post.author.id) }}">{{ comment.authorCom.username }}</a>
                 <small class="text-muted">{{ comment.date_posted.strftime('%Y-%m-%d') }}</small>
               </div>
               <p class="article-content">{{ comment.comment }}</p>
