@@ -2,7 +2,7 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from app.extensions import db
-from app.models import Post, Comment
+from app.models import Post, Comment, Category
 from app.posts.forms import PostForm, CommentForm
 
 posts = Blueprint('posts',__name__)
@@ -13,8 +13,12 @@ posts = Blueprint('posts',__name__)
 @login_required
 def new_post():
     form = PostForm()
+
+    # print(dict(form.category.choices).get(form.category.data))
     if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        # labelOfSelectField = dict(form.category.choices).get(int(form.category.data))
+        category = Category.query.get_or_404(form.category.data)   # Get the Post or return 404 if post not exist
+        post = Post(title=form.title.data, content=form.content.data, author=current_user, category=category)
         db.session.add(post)
         db.session.commit()
         flash('Your post has been created!', 'success')
@@ -68,3 +72,14 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your post has been deleted!', 'success')
     return redirect(url_for('main.home'))
+
+# Get All Posts for given category
+@posts.route("/post/filter/<int:category>")
+def filter_posts(category):
+    page = request.args.get('page', 1, type=int)
+    category = Category.query.get_or_404(category)   # Get the Post or return 404 if post not exist
+
+    posts = Post.query.filter_by(category=category)\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=5)
+    return render_template('filter_posts.html', posts=posts, category=category)

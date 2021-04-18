@@ -10,13 +10,14 @@ def create_app(config_filename=Config):
     app = Flask(__name__)
     app.config.from_object(config_filename)
 
-    # Method for Register/Init Extensions
-    register_extensions(app)
+    with app.app_context():
+        # Method for Register/Init Extensions
+        register_extensions(app)
 
-    import app.extensions as ex
-    migrate.init_app(app, ex.db)
-    # Register Blueprints
-    register_blueprints(app)
+        import app.extensions as ex
+        migrate.init_app(app, ex.db,render_as_batch=True)
+        # Register Blueprints
+        register_blueprints(app)
 
     return app
 

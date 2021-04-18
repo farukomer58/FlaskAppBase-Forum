@@ -50,8 +50,11 @@ class Post(db.Model):
     # The the other side of the relationship
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    # Define Relationship
+    # Define Relationship -> POST-COMMENT
     comments=  db.relationship('Comment', backref='thread', lazy=True)
+
+    # The the other side of the category relationship
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
   
     def __repr__(self):
         return f'Post({self.id}, {self.title}, {self.date_posted})'
@@ -70,3 +73,16 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f'Comment({self.id}, {self.comment}, {self.date_posted})'
+
+# Category Model
+class Category(db.Model):
+    # __tablename__ = '...' optional
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(100), nullable=False)
+
+    # Define Relationship -> POST-Category
+    post= db.relationship('Post', backref='category', lazy=True)
+
+    def __repr__(self):
+        return f'Category({self.id}, {self.category})'
+
