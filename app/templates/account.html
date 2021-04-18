@@ -4,10 +4,12 @@
       <div class="media">
         <img class="rounded-circle account-img" src="{{ image_file }}">
         <div class="media-body">
-          <h2 class="account-heading">{{ current_user.username }}</h2>
-          <p class="text-secondary">{{ current_user.email }}</p>
+          <h2 class="account-heading">{{ user.username }}</h2>
+          <p class="text-secondary">{{ user.email }}</p>
         </div>
       </div>
+
+        {% if current_user == user  %}
         <form method="POST" action="" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
@@ -53,5 +55,35 @@
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
         </form>
+        {% endif %}
     </div>
 {% endblock content %}
+
+
+{% block sidebar %}
+  <div class="content-section">
+      <ul class="list-group">
+        <li class="list-group-item list-group-item-light">Posts of User: {{user.username}}</li>
+        
+        {% for post in latestPosts %}
+          <article class="media content-section mt-1">
+            <div class="media-body">
+              <div class="article-metadata">
+                <a class="mr-2" href="{{ url_for('users.account_user', userid=post.author.id) }}">{{ post.author.username }}</a>
+                <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+              </div>
+              <h6><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></hr6>
+            </div>
+          </article>
+          <div class='col-12'>
+            <a class="" href="{{ url_for('users.user_posts', username=post.author.username) }}">See all Posts of User</a>
+          </div>
+        {% endfor %}
+        <!-- <li class="list-group-item list-group-item-light">Announcements</li>
+        <li class="list-group-item list-group-item-light">Calendars</li>
+        <li class="list-group-item list-group-item-light">etc</li> -->
+      </ul>
+    </p>
+  </div>
+
+{% endblock sidebar %}

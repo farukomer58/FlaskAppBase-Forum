@@ -1,12 +1,7 @@
 {% extends "layout.html" %}
+
+
 {% block content %}
-
-    <ul>
-      {% for category in categories %}
-        <li><a href="{{url_for('posts.filter_posts',category=category.id)}}">{{category.category}}</a></li>
-      {% endfor %}
-      </ul>
-
     {% for category in categories %}
         <article class="media content-section">
           <div class="media-body">
@@ -25,12 +20,10 @@
         </article>
     {% endfor %}
 
-
 {% endblock content %}
 
 
 {% block sidebar %}
-
   <div class="content-section">
       <ul class="list-group">
         <li class="list-group-item list-group-item-light">Latest Posts</li>
@@ -40,7 +33,7 @@
             <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
             <div class="media-body">
               <div class="article-metadata">
-                <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+                <a class="mr-2" href="{{ url_for('users.account_user', userid=post.author.id) }}">{{ post.author.username }}</a>
                 <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
               </div>
               <h6><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></hr6>
@@ -55,3 +48,12 @@
   </div>
 
 {% endblock sidebar %}
+
+{% block toprow %}
+<div class='col-8'>
+  <h3>Atom Forum</h3>
+</div>
+<div class='col-4'>
+  <a class="nav-item nav-link float-right btn btn-primary" href="{{ url_for('posts.new_post') }}">New Post</a>
+</div>
+{% endblock %}

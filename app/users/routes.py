@@ -82,9 +82,27 @@ def account():
         # Load with initial values if GET request
         form.username.data = current_user.username
         form.email.data = current_user.email
+         # Get latest post of user
+        latestPosts = Post.query.filter_by(author=current_user).order_by(Post.date_posted.desc()).limit(6).all()
+
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template('account.html', title='Account',
-                           image_file=image_file, form=form)
+                           image_file=image_file, form=form, user=current_user,latestPosts=latestPosts)
+
+# Visit Other users Account
+@users.route("/account/<int:userid>", methods=['GET', 'POST'])
+@login_required
+def account_user(userid):
+    user = User.query.get_or_404(userid)   # Get the User
+    print(user)
+    if current_user == user:
+        return redirect(url_for('users.account'))
+
+    # Get latest post of user
+    latestPosts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc()).limit(6).all()
+
+    image_file = url_for('static', filename='profile_pics/' + user.image_file)
+    return render_template('account.html', title='Account', image_file=image_file, user=user,latestPosts=latestPosts)
 
 # Get All Posts for given username
 @users.route("/user/<string:username>")

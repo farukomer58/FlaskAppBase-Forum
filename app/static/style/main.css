@@ -54,7 +54,10 @@ a.article-title:hover {
   width: 65px;
   margin-right: 16px;
 }
-
+.article-content img{
+  width:25%;
+  height:25;
+}
 .article-metadata {
   padding-bottom: 1px;
   margin-bottom: 4px;
